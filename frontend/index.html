@@ -12,5 +12,11 @@
 <body>
   <h1>Welcome to CRM Demo</h1>
   <p>This is a static front‑end deployed via Cloudflare Pages.</p>
+  <script>
+    fetch('/api/health')
+      .then(r => r.json())
+      .then(data => console.log('API health:', data))
+      .catch(err => console.error(err));
+  </script>
 </body>
 </html>
