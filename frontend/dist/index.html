@@ -10,7 +10,45 @@
   </style>
 </head>
 <body>
-  <h1>Welcome to CRM Demo</h1>
+  <h1>CRM Demo</h1>
   <p>This is a static front‑end deployed via Cloudflare Pages.</p>
 </body>
 </html>
+<form id="add-task-form">
+  <input type="text" id="task-title" placeholder="New task title" required>
+  <button type="submit">Add Task</button>
+</form>
+<ul id="tasks-list"></ul>
+
+<script>
+async function loadTasks() {
+  const resp = await fetch('/api/tasks');
+  const tasks = await resp.json();
+  const list = document.getElementById('tasks-list');
+  list.innerHTML = '';
+  tasks.forEach(task => {
+    const li = document.createElement('li');
+    li.textContent = task.title;
+    list.appendChild(li);
+  });
+}
+
+async function addTask(e) {
+  e.preventDefault();
+  const title = document.getElementById('task-title').value;
+  if (!title) return;
+  const resp = await fetch('/api/tasks', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({title})
+  });
+  const task = await resp.json();
+  document.getElementById('task-title').value = '';
+  loadTasks();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('add-task-form').addEventListener('submit', addTask);
+  loadTasks();
+});
+</script>
